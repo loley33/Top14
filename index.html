@@ -87,6 +87,13 @@ select{font:inherit;font-size:14px;font-weight:500;padding:6px 8px;border:1px so
 .jump a{font-family:var(--data);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:4px 8px;border-radius:4px}
 .jump a:hover{color:var(--fg);background:var(--accent-soft)}
 
+.seg{display:flex;gap:3px;padding:3px;background:var(--surface);border:1px solid var(--line);border-radius:6px;flex:1 1 100%;max-width:420px}
+.seg button{flex:1;font-family:var(--data);font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;border:0;background:transparent;color:var(--muted);height:36px;border-radius:4px;cursor:pointer}
+.seg button:hover{color:var(--fg)}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+body[data-view="std"] #calendrier,body[data-view="std"] #tv,body[data-view="std"] .bar .f:not(.fclub),body[data-view="std"] .chk,body[data-view="std"] #go,body[data-view="std"] .jump{display:none!important}
+body:not([data-view="std"]) #bilan{display:none}
+
 /* ---------- Titres de section ---------- */
 .sec{display:flex;flex-direction:column;gap:18px;padding-top:26px}
 .sh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
@@ -214,12 +221,13 @@ table.std{border-collapse:collapse;width:100%;min-width:640px;font-size:14px;fon
 
 <nav class="bar gut" aria-label="Filtres">
   <div class="in">
-    <div class="f"><label for="club">Club</label><select id="club"><option value="">Tous les clubs</option></select></div>
+    <div class="seg" role="group" aria-label="Affichage"><button type="button" id="vCal" aria-pressed="true">Calendrier</button><button type="button" id="vStd" aria-pressed="false">Classement</button></div>
+    <div class="f fclub"><label for="club">Club</label><select id="club"><option value="">Tous les clubs</option></select></div>
     <div class="f"><label for="lieu">Lieu</label><select id="lieu"><option value="">Domicile et extérieur</option><option value="h">Domicile</option><option value="a">Extérieur</option></select></div>
     <div class="f"><label for="chaine">Chaîne</label><select id="chaine"><option value="">Toutes</option><option value="Canal+">Canal+</option><option value="Canal+ Sport">Canal+ Sport / Sport 360</option><option value="Canal+ Live">Canal+ Live</option><option value="tbd">À fixer</option></select></div>
     <label class="chk"><input type="checkbox" id="past"> Afficher les résultats</label>
     <button class="btn" id="go" type="button"><span>Prochaine journée</span></button>
-    <div class="jump"><a href="#calendrier">Calendrier</a><a href="#bilan">Bilan</a><a href="#tv">Où regarder</a></div>
+    <div class="jump"><a href="#calendrier">Calendrier</a><a href="#tv">Où regarder</a></div>
   </div>
 </nav>
 
@@ -230,7 +238,7 @@ table.std{border-collapse:collapse;width:100%;min-width:640px;font-size:14px;fon
 </section>
 
 <section class="sec" id="bilan">
-  <div class="sh"><h2>Bilan des clubs</h2><p id="bilanSub"></p></div>
+  <div class="sh"><h2>Classement</h2><p id="bilanSub"></p></div>
   <div class="tblwrap"><table class="std" id="std"></table></div>
   <div class="legend">
     <span style="--c:var(--accent)">1-2 : demi-finale directe</span>
@@ -372,8 +380,17 @@ function renderStd(club){
 
 try{const s=JSON.parse(localStorage.getItem("t14f")||"null");if(s){$("club").value=s.club||"";$("lieu").value=s.lieu||"";$("chaine").value=s.ch||"";$("past").checked=!!s.past}}catch(e){}
 ["club","lieu","chaine","past"].forEach(id=>$(id).addEventListener("change",render));
-$("go").addEventListener("click",()=>{const el=$("j"+nextJ);if(el)el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"})});
+$("go").addEventListener("click",()=>{if(document.body.dataset.view==="std")setView("cal");const el=$("j"+nextJ);if(el)el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"})});
 render();
+function setView(v,scroll){
+  document.body.dataset.view=v;
+  $("vCal").setAttribute("aria-pressed",v!=="std");$("vStd").setAttribute("aria-pressed",v==="std");
+  try{localStorage.setItem("t14v",v)}catch(e){}
+  if(scroll){const b=document.querySelector(".bar");const top=b.getBoundingClientRect().top+window.scrollY;if(window.scrollY>top)window.scrollTo({top})}
+}
+$("vCal").addEventListener("click",()=>setView("cal",true));
+$("vStd").addEventListener("click",()=>setView("std",true));
+(()=>{let v="cal";try{v=localStorage.getItem("t14v")||"cal"}catch(e){}if(location.hash==="#bilan"||location.hash==="#classement")v="std";setView(v)})();
 </script>
 
 </body>
