@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Top 14">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f3d27">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Calendrier Top 14 2026-27</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+/* Layout : bandeau « pelouse » plein écran avec le prochain coup d'envoi, filtres collants, journées en feuilles de match façon tableau d'affichage, bilan des clubs, guide TV */
+:root{
+  --bg:#eef1ea; --surface:#ffffff; --line:#d5dccf; --fg:#13201a; --muted:#566358;
+  --accent:#0e6b3c; --accent-soft:#dcebe1; --flag:#c92b26; --flag-soft:#f8e1df;
+  --gold:#9a6d1c; --gold-soft:#f3e9d4; --live:#2d4f8a; --live-soft:#e3e9f5;
+  --turf:#0f3d27; --turf-2:#0b3020; --chalk:#f3f6ef; --chalk-dim:#b9cbbd;
+  --board:#0c1410; --board-fg:#f2f5ee; --lcd:#ffcf3a;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --data:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b120e; --surface:#121b16; --line:#25312a; --fg:#e6ece5; --muted:#93a196;
+  --accent:#5fcf8c; --accent-soft:#163225; --flag:#ff6259; --flag-soft:#3a1715;
+  --gold:#e0b25c; --gold-soft:#2f2615; --live:#93b2ec; --live-soft:#1b2640;
+  --board:#050906; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0b120e; --surface:#121b16; --line:#25312a; --fg:#e6ece5; --muted:#93a196;
+  --accent:#5fcf8c; --accent-soft:#163225; --flag:#ff6259; --flag-soft:#3a1715;
+  --gold:#e0b25c; --gold-soft:#2f2615; --live:#93b2ec; --live-soft:#1b2640;
+  --board:#050906; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45;padding-bottom:48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--turf)}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.in{max-width:960px;margin:0 auto}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- Bandeau pelouse ---------- */
+.hero{position:relative;overflow:hidden;color:var(--chalk);background:
+  repeating-linear-gradient(90deg,rgba(255,255,255,.045) 0 64px,transparent 64px 128px),
+  linear-gradient(180deg,var(--turf),var(--turf-2));padding-block:28px 26px}
+.hero svg.pitch{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero .in{position:relative;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:22px 28px;align-items:end}
+.eyebrow{font-family:var(--data);font-weight:600;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--chalk-dim)}
+.hero h1{font-family:var(--display);font-weight:900;font-size:clamp(64px,15vw,132px);line-height:.82;margin:6px 0 0;letter-spacing:-.01em;text-transform:uppercase;font-style:italic}
+.hero h1 span{display:block;font-size:.36em;font-style:normal;letter-spacing:.04em;font-weight:700;color:var(--lcd);margin-top:8px}
+.hero p.lead{margin:12px 0 0;max-width:52ch;color:var(--chalk-dim);font-size:15px}
+.stats{display:flex;flex-wrap:wrap;gap:0;margin-top:18px;border-top:1px solid rgba(255,255,255,.18)}
+.stat{padding:10px 18px 0 0;margin-right:18px;display:flex;flex-direction:column}
+.stat b{font-family:var(--display);font-weight:900;font-size:34px;line-height:1;font-variant-numeric:tabular-nums}
+.stat small{font-family:var(--data);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk-dim)}
+
+.ko{background:var(--board);border-radius:6px;border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 30px rgba(0,0,0,.35);overflow:hidden;color:var(--board-fg)}
+.ko-top{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;font-family:var(--data);font-size:12px;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.06);color:var(--chalk-dim)}
+.ko-top .liveDot{color:var(--lcd)}
+.ko-teams{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px;padding:14px 12px 6px}
+.ko-teams .nm{font-family:var(--display);font-weight:900;font-size:clamp(20px,3.4vw,28px);line-height:1;text-transform:uppercase;overflow-wrap:anywhere}
+.ko-teams .a{text-align:right}
+.ko-teams .vs{font-family:var(--data);font-weight:700;color:var(--chalk-dim);font-size:14px}
+.ko-cd{display:flex;gap:6px;padding:8px 12px 12px;align-items:flex-end;flex-wrap:wrap}
+.cd{background:#000;border-radius:4px;padding:4px 8px;min-width:54px;text-align:center}
+.cd b{display:block;font-family:var(--data);font-weight:700;font-size:30px;line-height:1;color:var(--lcd);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.cd small{font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--chalk-dim)}
+.ko-meta{margin-left:auto;text-align:right;font-family:var(--data);font-size:14px;color:var(--chalk-dim);line-height:1.25}
+.ko-meta strong{color:var(--board-fg);font-weight:600}
+
+/* ---------- Navigation + filtres ---------- */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:2px solid var(--fg)}
+.bar .in{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:end;padding-block:10px}
+.f{display:flex;flex-direction:column;gap:3px;min-width:0}
+.f label{font-family:var(--data);font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:600}
+select{font:inherit;font-size:14px;font-weight:500;padding:6px 8px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--fg);max-width:100%}
+.chk{display:flex;gap:6px;align-items:center;font-size:14px;padding-bottom:7px}
+.chk input{accent-color:var(--accent)}
+.btn{font-family:var(--data);font-size:15px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:7px 14px;border-radius:4px;border:0;color:#fff;background:var(--flag);cursor:pointer;transform:skewX(-8deg)}
+.btn span{display:inline-block;transform:skewX(8deg)}
+.btn:hover{filter:brightness(1.08)}
+.jump{display:flex;gap:4px;margin-left:auto;padding-bottom:4px;flex-wrap:wrap}
+.jump a{font-family:var(--data);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:4px 8px;border-radius:4px}
+.jump a:hover{color:var(--fg);background:var(--accent-soft)}
+
+/* ---------- Titres de section ---------- */
+.sec{display:flex;flex-direction:column;gap:18px;padding-top:26px}
+.sh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sh h2{font-family:var(--display);font-weight:900;font-size:clamp(30px,5vw,40px);line-height:1;margin:0;text-transform:uppercase;font-style:italic;letter-spacing:.005em}
+.sh p{margin:0;color:var(--muted);font-size:14px;max-width:65ch}
+
+/* ---------- Journées ---------- */
+#list{display:flex;flex-direction:column;gap:30px}
+.day{scroll-margin-top:96px;display:flex;flex-direction:column}
+.jh{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 14px;align-items:center;padding-bottom:8px;border-bottom:3px solid var(--fg)}
+.jn{font-family:var(--display);font-weight:900;font-size:44px;line-height:.85;min-width:58px;padding:6px 8px 4px;text-align:center;background:var(--fg);color:var(--bg);font-variant-numeric:tabular-nums;clip-path:polygon(0 0,100% 0,100% 82%,88% 100%,0 100%)}
+.jt h3{font-family:var(--data);font-weight:700;font-size:20px;margin:0;text-transform:uppercase;letter-spacing:.06em;line-height:1.1}
+.jt .d{color:var(--muted);font-size:14px}
+.tag{font-family:var(--data);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:3px 9px;border-radius:3px;white-space:nowrap}
+.tag.next{background:var(--flag);color:#fff}
+.tag.tbd{background:var(--gold-soft);color:var(--gold)}
+.tag.done{background:var(--line);color:var(--muted)}
+.dl{font-family:var(--data);font-size:13px;text-transform:uppercase;letter-spacing:.14em;font-weight:700;color:var(--accent);padding:12px 0 4px}
+
+.m{display:grid;grid-template-columns:minmax(0,1fr) 96px minmax(0,1fr) minmax(0,210px);gap:10px 14px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.side{display:flex;align-items:center;gap:8px;min-width:0;font-weight:600;font-size:16px}
+.side.h{justify-content:flex-end;text-align:right}
+.side .nm{min-width:0;overflow-wrap:anywhere}
+.side.sel .nm{box-shadow:inset 0 -3px 0 var(--lcd)}
+.side.lose .nm{color:var(--muted);font-weight:500}
+.bn{flex:none;font-family:var(--data);font-weight:700;font-size:11px;letter-spacing:.06em;padding:1px 5px;border-radius:3px;line-height:1.4}
+.bn.bo{background:var(--accent);color:var(--surface)}
+.bn.bd{background:var(--gold-soft);color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.calleg{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:13px;color:var(--muted)}
+.calleg span{display:flex;gap:6px;align-items:center}
+.kit{flex:none;width:14px;height:18px;border-radius:2px 2px 4px 4px;background:linear-gradient(90deg,var(--c1) 0 50%,var(--c2) 50% 100%);box-shadow:0 0 0 1px var(--line)}
+.mid{background:var(--board);color:var(--board-fg);border-radius:4px;text-align:center;padding:5px 4px 4px;font-family:var(--data);font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.mid .k{display:block;font-size:22px;color:var(--lcd);letter-spacing:.03em}
+.mid .sc{display:flex;justify-content:center;gap:6px;font-size:22px}
+.mid .sc i{font-style:normal;opacity:.55}
+.mid .sc .w{color:var(--lcd);opacity:1}
+.mid .lbl{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--chalk-dim);margin-top:2px;font-weight:600}
+.mid.tbdm .k{font-size:15px;color:var(--chalk-dim);letter-spacing:.08em;padding-block:3px}
+.ch{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end}
+.pill{font-size:12px;font-weight:600;padding:2px 8px;border-radius:3px;white-space:nowrap;border:1px solid transparent}
+.p-c{background:var(--fg);color:var(--bg)}
+.p-s{background:var(--surface);color:var(--fg);border-color:var(--line)}
+.p-l{background:var(--live-soft);color:var(--live)}
+.p-t{background:var(--gold-soft);color:var(--gold)}
+.empty{color:var(--muted);padding:20px 0}
+
+/* ---------- Bilan ---------- */
+.tblwrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+table.std{border-collapse:collapse;width:100%;min-width:640px;font-size:14px;font-variant-numeric:tabular-nums}
+.std th{font-family:var(--data);font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:600;text-align:center;padding:9px 6px;border-bottom:2px solid var(--fg)}
+.std th.l,.std td.l{text-align:left}
+.std td{text-align:center;padding:7px 6px;border-bottom:1px solid var(--line)}
+.std td.rk{font-family:var(--display);font-weight:900;font-size:20px;width:44px;border-left:4px solid transparent}
+.std tr.z1 td.rk{border-left-color:var(--accent)}
+.std tr.z2 td.rk{border-left-color:var(--live)}
+.std tr.z3 td.rk{border-left-color:var(--gold)}
+.std tr.z4 td.rk{border-left-color:var(--flag)}
+.std td.club{display:flex;gap:8px;align-items:center;font-weight:600;white-space:nowrap}
+.std td.pts{font-family:var(--data);font-weight:700;font-size:18px}
+.std tr.selrow td{background:var(--accent-soft)}
+.pos{color:var(--accent);font-weight:600}.neg{color:var(--flag);font-weight:600}
+.form{display:inline-flex;gap:3px}
+.form i{font-style:normal;font-family:var(--data);font-weight:700;font-size:11px;width:18px;height:18px;line-height:18px;border-radius:3px;color:#fff;text-align:center}
+.form .V{background:var(--accent)}.form .N{background:var(--gold)}.form .D{background:var(--flag)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend span::before{content:"";width:12px;height:12px;border-radius:2px;background:var(--c)}
+.note{font-size:13px;color:var(--muted);max-width:75ch;margin:0}
+
+/* ---------- Guide TV ---------- */
+.guide{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:22px}
+.slots{display:flex;flex-direction:column;gap:8px}
+.slot{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+.slot .mid{padding:6px 4px}
+.slot .mid .k{font-size:22px}
+.slot b{display:block;font-weight:600}
+.slot span{font-size:14px;color:var(--muted)}
+.tips{display:flex;flex-direction:column;gap:10px}
+.tips h3{font-family:var(--data);font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:.06em;margin:0}
+.tips ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.tips li{max-width:65ch}
+.src{font-size:12px;color:var(--muted);margin:0}
+.src a{color:var(--accent)}
+
+@media (max-width:720px){
+  .hero .in{grid-template-columns:minmax(0,1fr)}
+  .guide{grid-template-columns:minmax(0,1fr)}
+  .m{grid-template-columns:minmax(0,1fr) 84px minmax(0,1fr)}
+  .ch{grid-column:1/-1;justify-content:center}
+  .jump{display:none}
+}
+@media (max-width:420px){
+  .side{font-size:14px;gap:6px}
+  .m{gap:6px 8px;grid-template-columns:minmax(0,1fr) 76px minmax(0,1fr)}
+  .mid .k,.mid .sc{font-size:19px}
+  .jn{font-size:36px;min-width:48px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .hero h1{animation:rush .7s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes rush{from{transform:translateX(-24px);opacity:.35}to{transform:none;opacity:1}}
+}
+</style>
+
+</head>
+<body>
+<header class="hero gut">
+  <svg class="pitch" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true">
+    <g fill="none" stroke="rgba(255,255,255,.16)" stroke-width="2" vector-effect="non-scaling-stroke">
+      <line x1="60" y1="0" x2="60" y2="300"/><line x1="940" y1="0" x2="940" y2="300"/>
+      <line x1="250" y1="0" x2="250" y2="300"/><line x1="750" y1="0" x2="750" y2="300"/>
+      <line x1="500" y1="0" x2="500" y2="300"/>
+      <line x1="410" y1="0" x2="410" y2="300" stroke-dasharray="10 10"/><line x1="590" y1="0" x2="590" y2="300" stroke-dasharray="10 10"/>
+    </g>
+  </svg>
+  <div class="in">
+    <div>
+      <div class="eyebrow">Championnat de France de rugby · 2026-2027</div>
+      <h1>Top 14<span>Calendrier &amp; diffusions</span></h1>
+      <p class="lead">Les 26 journées de la phase régulière, coup d'envoi à l'heure de Paris et chaîne de diffusion. Les horaires sont fixés par la Ligue 3 à 6 semaines avant chaque journée.</p>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="ko" id="ko" aria-live="polite"></div>
+  </div>
+</header>
+
+<nav class="bar gut" aria-label="Filtres">
+  <div class="in">
+    <div class="f"><label for="club">Club</label><select id="club"><option value="">Tous les clubs</option></select></div>
+    <div class="f"><label for="lieu">Lieu</label><select id="lieu"><option value="">Domicile et extérieur</option><option value="h">Domicile</option><option value="a">Extérieur</option></select></div>
+    <div class="f"><label for="chaine">Chaîne</label><select id="chaine"><option value="">Toutes</option><option value="Canal+">Canal+</option><option value="Canal+ Sport">Canal+ Sport / Sport 360</option><option value="Canal+ Live">Canal+ Live</option><option value="tbd">À fixer</option></select></div>
+    <label class="chk"><input type="checkbox" id="past"> Afficher les résultats</label>
+    <button class="btn" id="go" type="button"><span>Prochaine journée</span></button>
+    <div class="jump"><a href="#calendrier">Calendrier</a><a href="#bilan">Bilan</a><a href="#tv">Où regarder</a></div>
+  </div>
+</nav>
+
+<div class="gut"><div class="in">
+<section class="sec" id="calendrier">
+  <div class="sh"><h2>Le calendrier</h2><div class="calleg"><span><b class="bn bo">BO</b> bonus offensif (3 essais de plus que l'adversaire)</span><span><b class="bn bd">BD</b> bonus défensif (défaite de 5 points ou moins)</span></div></div>
+  <div id="list"></div>
+</section>
+
+<section class="sec" id="bilan">
+  <div class="sh"><h2>Bilan des clubs</h2><p id="bilanSub"></p></div>
+  <div class="tblwrap"><table class="std" id="std"></table></div>
+  <div class="legend">
+    <span style="--c:var(--accent)">1-2 : demi-finale directe</span>
+    <span style="--c:var(--live)">3-6 : barrages</span>
+    <span style="--c:var(--gold)">13 : barrage d'accession</span>
+    <span style="--c:var(--flag)">14 : relégation</span>
+  </div>
+  <p class="note">Barème : victoire 4 points, nul 2, bonus offensif +1 (vainqueur avec au moins 3 essais de plus que l'adversaire), bonus défensif +1 (défaite de 5 points ou moins). Bonus offensifs relevés sur le site officiel de la LNR. En cas d'égalité de points, l'ordre suit ici la différence de points ; le règlement officiel regarde d'abord les confrontations directes.</p>
+</section>
+
+<section class="sec" id="tv">
+  <div class="sh"><h2>Où regarder</h2><p>Canal+ détient l'exclusivité du Top 14 cette saison et a prolongé ses droits jusqu'en 2032.</p></div>
+  <div class="guide">
+    <div class="slots">
+      <div class="slot"><div class="mid"><span class="k">14h30</span><span class="lbl">Samedi</span></div><div><b>1 match</b><span>Canal+ Sport (parfois Canal+ ou Canal+ Sport 360)</span></div></div>
+      <div class="slot"><div class="mid"><span class="k">16h35</span><span class="lbl">Samedi</span></div><div><b>4 à 5 matchs</b><span>Multiplex sur Canal+, chaque match en intégralité sur Canal+ Live</span></div></div>
+      <div class="slot"><div class="mid"><span class="k">21h00</span><span class="lbl">Samedi</span></div><div><b>1 affiche</b><span>Canal+</span></div></div>
+      <div class="slot"><div class="mid"><span class="k">21h05</span><span class="lbl">Dimanche</span></div><div><b>La grande affiche</b><span>Canal+</span></div></div>
+    </div>
+    <div class="tips">
+      <h3>Bon à savoir</h3>
+      <ul>
+        <li>Pour voir tous les matchs en entier, il faut une offre qui inclut Canal+ Sport et les chaînes Canal+ Live (le multiplex seul ne montre qu'une partie de chaque rencontre).</li>
+        <li>Tout est aussi disponible en direct et en replay sur l'application Canal+.</li>
+        <li>Phases finales : barrages mi-juin, demi-finales les 19 et 20 juin 2027 à Bordeaux, finale le samedi 26 juin 2027 au Stade de France, aussi diffusée en clair sur France 2.</li>
+        <li>Les journées sans horaire sont programmées par blocs par la LNR. La date affichée est celle du week-end ; un match peut tomber le samedi ou le dimanche.</li>
+      </ul>
+      <p class="src">Source : <a href="https://top14.lnr.fr/calendrier-et-resultats" target="_blank" rel="noopener">site officiel du Top 14 (LNR)</a> · Résultats et bonus à jour au 23 octobre 2026 (6e journée).</p>
+    </div>
+  </div>
+</section>
+</div></div>
+
+<script>
+const D=[[1,"2026-09-05","","Bayonne","Toulon","","27-26",""],[1,"2026-09-05","","Castres","Vannes","","29-20",""],[1,"2026-09-05","","Lyon","Clermont","","40-36",""],[1,"2026-09-05","","Montpellier","Pau","","19-27",""],[1,"2026-09-05","","Stade Français","Perpignan","","28-26",""],[1,"2026-09-05","","Bordeaux-Bègles","Racing 92","","64-5","h"],[1,"2026-09-06","","La Rochelle","Toulouse","","30-27",""],[2,"2026-09-12","","Perpignan","Castres","","43-29",""],[2,"2026-09-12","","Vannes","Montpellier","","12-26",""],[2,"2026-09-12","","Clermont","Stade Français","","25-16",""],[2,"2026-09-12","","Pau","Bayonne","","70-28","h"],[2,"2026-09-12","","Racing 92","Lyon","","31-48","a"],[2,"2026-09-12","","Toulon","La Rochelle","","20-21",""],[2,"2026-09-13","","Toulouse","Bordeaux-Bègles","","48-12","h"],[3,"2026-09-19","","Castres","Toulon","","29-27",""],[3,"2026-09-19","","Bayonne","Clermont","","46-24","h"],[3,"2026-09-19","","La Rochelle","Racing 92","","10-20",""],[3,"2026-09-19","","Lyon","Pau","","51-25","h"],[3,"2026-09-19","","Montpellier","Perpignan","","50-13","h"],[3,"2026-09-19","","Vannes","Toulouse","","23-29",""],[3,"2026-09-20","","Bordeaux-Bègles","Stade Français","","40-10","h"],[4,"2026-09-26","","Perpignan","Bordeaux-Bègles","","38-25",""],[4,"2026-09-26","","Clermont","Castres","","20-6","h"],[4,"2026-09-26","","Stade Français","Lyon","","31-10","h"],[4,"2026-09-26","","Racing 92","Bayonne","","17-20",""],[4,"2026-09-26","","Toulon","Vannes","","28-10","h"],[4,"2026-09-26","","Pau","La Rochelle","","39-17","h"],[4,"2026-09-27","","Toulouse","Montpellier","","40-18","h"],[5,"2026-10-03","","Bordeaux-Bègles","Lyon","","51-28","h"],[5,"2026-10-03","","Bayonne","Stade Français","","35-32",""],[5,"2026-10-03","","Vannes","Pau","","40-43",""],[5,"2026-10-03","","La Rochelle","Clermont","","38-13","h"],[5,"2026-10-03","","Racing 92","Perpignan","","55-25","h"],[5,"2026-10-03","","Castres","Toulouse","","7-8",""],[5,"2026-10-04","","Montpellier","Toulon","","28-0","h"],[6,"2026-10-10","","Stade Français","Montpellier","","30-22",""],[6,"2026-10-10","","Perpignan","Vannes","","21-12",""],[6,"2026-10-10","","Lyon","La Rochelle","","16-28","a"],[6,"2026-10-10","","Pau","Castres","","35-26",""],[6,"2026-10-10","","Toulon","Racing 92","","29-15",""],[6,"2026-10-10","","Clermont","Bordeaux-Bègles","","22-23",""],[6,"2026-10-11","","Toulouse","Bayonne","","45-34","h"],[7,"2026-10-24","14:30","Vannes","Clermont","Canal+ Sport",""],[7,"2026-10-24","16:35","Bayonne","Lyon","Canal+ / Canal+ Sport",""],[7,"2026-10-24","16:35","Castres","Stade Français","Canal+ Live / Canal+",""],[7,"2026-10-24","16:35","Racing 92","Montpellier","Canal+ / Canal+ Live",""],[7,"2026-10-24","16:35","Toulouse","Perpignan","Canal+ / Canal+ Live",""],[7,"2026-10-24","21:00","Toulon","Pau","Canal+",""],[7,"2026-10-25","21:05","La Rochelle","Bordeaux-Bègles","Canal+",""],[8,"2026-10-31","14:30","Clermont","Racing 92","Canal+ Sport 360",""],[8,"2026-10-31","16:35","Bordeaux-Bègles","Bayonne","Canal+ / Canal+ Live",""],[8,"2026-10-31","16:35","Lyon","Vannes","Canal+ Live / Canal+",""],[8,"2026-10-31","16:35","Montpellier","Castres","Canal+ / Canal+ Live",""],[8,"2026-10-31","16:35","Stade Français","La Rochelle","Canal+ Live / Canal+",""],[8,"2026-10-31","21:00","Perpignan","Toulon","Canal+",""],[8,"2026-11-01","21:05","Pau","Toulouse","Canal+",""],[9,"2026-11-07","14:30","Vannes","Bordeaux-Bègles","Canal+",""],[9,"2026-11-07","16:35","Castres","Racing 92","Canal+ / Canal+ Live",""],[9,"2026-11-07","16:35","Montpellier","Lyon","Canal+ / Canal+ Live",""],[9,"2026-11-07","16:35","Pau","Perpignan","Canal+ / Canal+ Live",""],[9,"2026-11-07","16:35","Toulon","Stade Français","Canal+ / Canal+ Live",""],[9,"2026-11-07","16:35","Toulouse","Clermont","Canal+ / Canal+ Live",""],[9,"2026-11-08","21:05","La Rochelle","Bayonne","Canal+",""],[10,"2026-11-28","TBD","Bayonne","Castres","",""],[10,"2026-11-28","TBD","Bordeaux-Bègles","Montpellier","",""],[10,"2026-11-28","TBD","Clermont","Toulon","",""],[10,"2026-11-28","TBD","La Rochelle","Perpignan","",""],[10,"2026-11-28","TBD","Lyon","Toulouse","",""],[10,"2026-11-28","TBD","Stade Français","Vannes","",""],[10,"2026-11-28","TBD","Racing 92","Pau","",""],[11,"2026-12-05","TBD","Perpignan","Clermont","",""],[11,"2026-12-05","TBD","Vannes","Bayonne","",""],[11,"2026-12-05","TBD","Castres","Lyon","",""],[11,"2026-12-05","TBD","Montpellier","La Rochelle","",""],[11,"2026-12-05","TBD","Pau","Stade Français","",""],[11,"2026-12-05","TBD","Toulon","Bordeaux-Bègles","",""],[11,"2026-12-05","TBD","Toulouse","Racing 92","",""],[12,"2026-12-19","TBD","Bayonne","Perpignan","",""],[12,"2026-12-19","TBD","Bordeaux-Bègles","Pau","",""],[12,"2026-12-19","TBD","Clermont","Montpellier","",""],[12,"2026-12-19","TBD","La Rochelle","Castres","",""],[12,"2026-12-19","TBD","Lyon","Toulon","",""],[12,"2026-12-19","TBD","Stade Français","Toulouse","",""],[12,"2026-12-19","TBD","Racing 92","Vannes","",""],[13,"2026-12-26","TBD","Perpignan","Lyon","",""],[13,"2026-12-26","TBD","Vannes","La Rochelle","",""],[13,"2026-12-26","TBD","Castres","Bordeaux-Bègles","",""],[13,"2026-12-26","TBD","Montpellier","Bayonne","",""],[13,"2026-12-26","TBD","Pau","Clermont","",""],[13,"2026-12-26","TBD","Racing 92","Stade Français","",""],[13,"2026-12-26","TBD","Toulouse","Toulon","",""],[14,"2027-01-02","TBD","Bayonne","Toulouse","",""],[14,"2027-01-02","TBD","Bordeaux-Bègles","Perpignan","",""],[14,"2027-01-02","TBD","Clermont","Vannes","",""],[14,"2027-01-02","TBD","La Rochelle","Pau","",""],[14,"2027-01-02","TBD","Lyon","Racing 92","",""],[14,"2027-01-02","TBD","Stade Français","Castres","",""],[14,"2027-01-02","TBD","Toulon","Montpellier","",""],[15,"2027-01-23","TBD","Vannes","Perpignan","",""],[15,"2027-01-23","TBD","Castres","Clermont","",""],[15,"2027-01-23","TBD","Montpellier","Stade Français","",""],[15,"2027-01-23","TBD","Pau","Lyon","",""],[15,"2027-01-23","TBD","Racing 92","Bordeaux-Bègles","",""],[15,"2027-01-23","TBD","Toulon","Bayonne","",""],[15,"2027-01-23","TBD","Toulouse","La Rochelle","",""],[16,"2027-01-30","TBD","Perpignan","Stade Français","",""],[16,"2027-01-30","TBD","Bordeaux-Bègles","Vannes","",""],[16,"2027-01-30","TBD","Clermont","Toulouse","",""],[16,"2027-01-30","TBD","La Rochelle","Toulon","",""],[16,"2027-01-30","TBD","Lyon","Bayonne","",""],[16,"2027-01-30","TBD","Pau","Montpellier","",""],[16,"2027-01-30","TBD","Racing 92","Castres","",""],[17,"2027-02-20","TBD","Bayonne","La Rochelle","",""],[17,"2027-02-20","TBD","Perpignan","Pau","",""],[17,"2027-02-20","TBD","Vannes","Castres","",""],[17,"2027-02-20","TBD","Montpellier","Racing 92","",""],[17,"2027-02-20","TBD","Stade Français","Bordeaux-Bègles","",""],[17,"2027-02-20","TBD","Toulon","Clermont","",""],[17,"2027-02-20","TBD","Toulouse","Lyon","",""],[18,"2027-02-27","TBD","Bordeaux-Bègles","Toulon","",""],[18,"2027-02-27","TBD","Castres","Perpignan","",""],[18,"2027-02-27","TBD","Clermont","Bayonne","",""],[18,"2027-02-27","TBD","La Rochelle","Stade Français","",""],[18,"2027-02-27","TBD","Lyon","Montpellier","",""],[18,"2027-02-27","TBD","Pau","Vannes","",""],[18,"2027-02-27","TBD","Racing 92","Toulouse","",""],[19,"2027-03-20","TBD","Bayonne","Bordeaux-Bègles","",""],[19,"2027-03-20","TBD","Perpignan","Racing 92","",""],[19,"2027-03-20","TBD","Castres","La Rochelle","",""],[19,"2027-03-20","TBD","Montpellier","Clermont","",""],[19,"2027-03-20","TBD","Stade Français","Pau","",""],[19,"2027-03-20","TBD","Toulon","Lyon","",""],[19,"2027-03-20","TBD","Toulouse","Vannes","",""],[20,"2027-03-27","TBD","Bayonne","Montpellier","",""],[20,"2027-03-27","TBD","Perpignan","La Rochelle","",""],[20,"2027-03-27","TBD","Bordeaux-Bègles","Toulouse","",""],[20,"2027-03-27","TBD","Vannes","Stade Français","",""],[20,"2027-03-27","TBD","Clermont","Pau","",""],[20,"2027-03-27","TBD","Lyon","Castres","",""],[20,"2027-03-27","TBD","Racing 92","Toulon","",""],[21,"2027-04-17","TBD","Castres","Bayonne","",""],[21,"2027-04-17","TBD","La Rochelle","Vannes","",""],[21,"2027-04-17","TBD","Lyon","Perpignan","",""],[21,"2027-04-17","TBD","Montpellier","Bordeaux-Bègles","",""],[21,"2027-04-17","TBD","Stade Français","Clermont","",""],[21,"2027-04-17","TBD","Pau","Racing 92","",""],[21,"2027-04-17","TBD","Toulon","Toulouse","",""],[22,"2027-04-24","TBD","Bayonne","Pau","",""],[22,"2027-04-24","TBD","Perpignan","Montpellier","",""],[22,"2027-04-24","TBD","Bordeaux-Bègles","La Rochelle","",""],[22,"2027-04-24","TBD","Vannes","Toulon","",""],[22,"2027-04-24","TBD","Clermont","Lyon","",""],[22,"2027-04-24","TBD","Stade Français","Racing 92","",""],[22,"2027-04-24","TBD","Toulouse","Castres","",""],[23,"2027-05-08","TBD","Bayonne","Vannes","",""],[23,"2027-05-08","TBD","Clermont","Perpignan","",""],[23,"2027-05-08","TBD","Lyon","Stade Français","",""],[23,"2027-05-08","TBD","Montpellier","Toulouse","",""],[23,"2027-05-08","TBD","Pau","Bordeaux-Bègles","",""],[23,"2027-05-08","TBD","Racing 92","La Rochelle","",""],[23,"2027-05-08","TBD","Toulon","Castres","",""],[24,"2027-05-15","TBD","Perpignan","Bayonne","",""],[24,"2027-05-15","TBD","Bordeaux-Bègles","Clermont","",""],[24,"2027-05-15","TBD","Vannes","Racing 92","",""],[24,"2027-05-15","TBD","Castres","Montpellier","",""],[24,"2027-05-15","TBD","La Rochelle","Lyon","",""],[24,"2027-05-15","TBD","Stade Français","Toulon","",""],[24,"2027-05-15","TBD","Toulouse","Pau","",""],[25,"2027-05-29","TBD","Bayonne","Racing 92","",""],[25,"2027-05-29","TBD","Castres","Pau","",""],[25,"2027-05-29","TBD","Clermont","La Rochelle","",""],[25,"2027-05-29","TBD","Lyon","Bordeaux-Bègles","",""],[25,"2027-05-29","TBD","Montpellier","Vannes","",""],[25,"2027-05-29","TBD","Toulon","Perpignan","",""],[25,"2027-05-29","TBD","Toulouse","Stade Français","",""],[26,"2027-06-05","TBD","Perpignan","Toulouse","",""],[26,"2027-06-05","TBD","Bordeaux-Bègles","Castres","",""],[26,"2027-06-05","TBD","Vannes","Lyon","",""],[26,"2027-06-05","TBD","La Rochelle","Montpellier","",""],[26,"2027-06-05","TBD","Stade Français","Bayonne","",""],[26,"2027-06-05","TBD","Pau","Toulon","",""],[26,"2027-06-05","TBD","Racing 92","Clermont","",""]];
+
+const KIT={"Bayonne":["#4fa3e0","#ffffff"],"Bordeaux-Bègles":["#6d1130","#ffffff"],"Castres":["#1d3f8f","#ffffff"],"Clermont":["#f5c400","#14285a"],"La Rochelle":["#f2c500","#111111"],"Lyon":["#d4122e","#111111"],"Montpellier":["#0a4ea2","#ffffff"],"Pau":["#0a7a3c","#ffffff"],"Perpignan":["#d4122e","#f5c400"],"Racing 92":["#74b9e8","#ffffff"],"Stade Français":["#e4007c","#0d1f4c"],"Toulon":["#c8102e","#111111"],"Toulouse":["#c8102e","#111111"],"Vannes":["#1a55a8","#ffffff"]};
+const MOIS=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+const JOURS=["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const TODAY=iso(new Date());
+const pd=s=>{const[y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const fmtDay=s=>{const d=pd(s);return JOURS[d.getDay()]+" "+d.getDate()+" "+MOIS[d.getMonth()]};
+const fmtWe=s=>{const d=pd(s),e=new Date(d);e.setDate(d.getDate()+1);
+  return "sam. "+d.getDate()+(d.getMonth()!==e.getMonth()?" "+MOIS[d.getMonth()]:"")+" – dim. "+e.getDate()+" "+MOIS[e.getMonth()]+" "+e.getFullYear()};
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
+const kit=c=>{const k=KIT[c]||["#888","#ccc"];return `<span class="kit" style="--c1:${k[0]};--c2:${k[1]}" aria-hidden="true"></span>`};
+const clubs=[...new Set(D.flatMap(r=>[r[3],r[4]]))].sort((a,b)=>a.localeCompare(b,"fr"));
+clubs.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;$("club").appendChild(o)});
+const played=r=>!!r[6];
+const sc=r=>r[6].split("-").map(Number);
+const nextJ=(D.find(r=>!played(r)&&r[1]>=TODAY)||{})[0];
+
+/* Coup d'envoi en heure de Paris (heure d'été jusqu'au 25/10/2026, puis à partir du 28/03/2027) */
+const kickoff=r=>{const off=(r[1]<"2026-10-25"||r[1]>="2027-03-28")?"+02:00":"+01:00";return new Date(r[1]+"T"+r[2]+":00"+off)};
+
+/* Stats */
+const done=D.filter(played).length, fixed=D.filter(r=>r[2]&&r[2]!=="TBD"&&!played(r)).length;
+$("stats").innerHTML=[["26","journées"],[D.length,"matchs"],[done,"joués"],[fixed,"programmés"],[D.length-done-fixed,"à fixer"]]
+  .map(([n,l])=>`<div class="stat"><b>${n}</b><small>${l}</small></div>`).join("");
+
+/* Prochain coup d'envoi */
+function board(){
+  const now=Date.now();
+  const nx=D.find(r=>!played(r)&&r[2]&&r[2]!=="TBD"&&kickoff(r).getTime()+105*60000>now);
+  if(!nx){const r=D.find(r=>!played(r)&&r[1]>=TODAY);
+    $("ko").innerHTML=r?`<div class="ko-top"><span>Prochaine journée</span><span>J${r[0]}</span></div><div class="ko-cd"><div class="ko-meta" style="margin:0;text-align:left"><strong>${fmtWe(r[1])}</strong><br>Horaires à fixer par la Ligue</div></div>`:`<div class="ko-top"><span>Saison régulière terminée</span></div>`;return}
+  const t=kickoff(nx).getTime(), diff=t-now, live=diff<=0;
+  let cd;
+  if(live) cd=`<div class="cd"><b>LIVE</b><small>en cours</small></div>`;
+  else{const m=Math.floor(diff/60000),d=Math.floor(m/1440),h=Math.floor(m%1440/60),mn=m%60;
+    cd=[[d,"jours"],[h,"heures"],[mn,"min"]].map(([v,l])=>`<div class="cd"><b>${String(v).padStart(2,"0")}</b><small>${l}</small></div>`).join("")}
+  $("ko").innerHTML=`<div class="ko-top"><span class="liveDot">${live?"● Match en cours":"Prochain coup d'envoi"}</span><span>Journée ${nx[0]}</span></div>
+   <div class="ko-teams"><span class="nm">${esc(nx[3])}</span><span class="vs">reçoit</span><span class="nm a">${esc(nx[4])}</span></div>
+   <div class="ko-cd">${cd}<div class="ko-meta"><strong>${fmtDay(nx[1])} · ${nx[2].replace(":","h")}</strong><br>${esc(nx[5]||"Chaîne à confirmer")}</div></div>`;
+}
+board(); setInterval(board,30000);
+
+/* Calendrier */
+function pills(ch){
+  if(!ch) return `<span class="pill p-t">Diffuseur à fixer</span>`;
+  return ch.split(" / ").map(c=>{
+    const cls=c==="Canal+"?"p-c":c==="Canal+ Live"?"p-l":"p-s";
+    return `<span class="pill ${cls}">${c==="Canal+ Live"?"Canal+ Live (intégral)":c}</span>`}).join("");
+}
+function render(){
+  const club=$("club").value, lieu=$("lieu").value, ch=$("chaine").value, past=$("past").checked;
+  const rows=D.filter(r=>{
+    if(!past&&played(r)) return false;
+    if(club){ if(lieu==="h"&&r[3]!==club) return false; if(lieu==="a"&&r[4]!==club) return false; if(!lieu&&r[3]!==club&&r[4]!==club) return false; }
+    if(ch){ if(played(r)) return false; if(ch==="tbd"){ if(r[5]) return false;} else if(!(r[5]||"").split(" / ").some(x=>x===ch||(ch==="Canal+ Sport"&&x.startsWith("Canal+ Sport")))) return false; }
+    return true});
+  const byJ={}; rows.forEach(r=>(byJ[r[0]]=byJ[r[0]]||[]).push(r));
+  const out=[];
+  Object.keys(byJ).map(Number).sort((a,b)=>a-b).forEach(j=>{
+    const ms=byJ[j], all=D.filter(r=>r[0]===j);
+    const isDone=all.every(played), isTbd=all.every(r=>r[2]==="TBD");
+    const tag=isDone?'<span class="tag done">Terminée</span>':j===nextJ?'<span class="tag next">Prochaine</span>':isTbd?'<span class="tag tbd">Horaires à fixer</span>':'';
+    const dateTxt=isTbd?fmtWe(all[0][1]):(()=>{const ds=[...new Set(all.map(r=>r[1]))];return ds.map(fmtDay).join(" et ")+" "+pd(ds[0]).getFullYear()})();
+    let h=`<div class="day" id="j${j}"><div class="jh"><span class="jn">${j}</span><div class="jt"><h3>Journée ${j}</h3><span class="d">${dateTxt}</span></div>${tag}</div>`;
+    let lastDay="";
+    ms.forEach(r=>{
+      if(!isTbd&&r[1]!==lastDay){h+=`<div class="dl">${fmtDay(r[1])}</div>`;lastDay=r[1]}
+      let mid, hc=r[3]===club?" sel":"", ac=r[4]===club?" sel":"";
+      let hb="",ab="";
+      if(played(r)){const[a,b]=sc(r);
+        if(a<b)hc+=" lose"; if(b<a)ac+=" lose";
+        if(r[7]==="h")hb='<b class="bn bo" title="Bonus offensif">BO</b>'; if(r[7]==="a")ab='<b class="bn bo" title="Bonus offensif">BO</b>';
+        if(a<b&&b-a<=5)hb='<b class="bn bd" title="Bonus défensif">BD</b>'; if(b<a&&a-b<=5)ab='<b class="bn bd" title="Bonus défensif">BD</b>';
+        mid=`<div class="mid"><span class="sc"><i class="${a>=b?"w":""}">${a}</i><i>–</i><i class="${b>=a?"w":""}">${b}</i></span><span class="lbl">Score final</span></div>`}
+      else if(r[2]==="TBD") mid=`<div class="mid tbdm"><span class="k">À FIXER</span></div>`;
+      else mid=`<div class="mid"><span class="k">${r[2].replace(":","h")}</span><span class="lbl">Coup d'envoi</span></div>`;
+      const right=played(r)?`<div class="ch"></div>`:`<div class="ch">${pills(r[5])}</div>`;
+      h+=`<div class="m"><div class="side h${hc}">${hb}<span class="nm">${esc(r[3])}</span>${kit(r[3])}</div>${mid}<div class="side a${ac}">${kit(r[4])}<span class="nm">${esc(r[4])}</span>${ab}</div>${right}</div>`;
+    });
+    out.push(h+"</div>");
+  });
+  $("list").innerHTML=out.length?out.join(""):`<p class="empty">Aucun match ne correspond à ces filtres.</p>`;
+  renderStd(club);
+  try{localStorage.setItem("t14f",JSON.stringify({club,lieu,ch,past}))}catch(e){}
+}
+
+/* Bilan des clubs */
+function renderStd(club){
+  const T={}; clubs.forEach(c=>T[c]={c,j:0,v:0,n:0,d:0,pp:0,pc:0,bo:0,bd:0,f:[]});
+  const P=D.filter(played).sort((a,b)=>a[0]-b[0]);
+  P.forEach(r=>{const[a,b]=sc(r); if(r[7]==="h")T[r[3]].bo++; if(r[7]==="a")T[r[4]].bo++;
+    [[r[3],a,b],[r[4],b,a]].forEach(([c,x,y])=>{const t=T[c];t.j++;t.pp+=x;t.pc+=y;
+      if(x>y){t.v++;t.f.push("V")}else if(x===y){t.n++;t.f.push("N")}else{t.d++;t.f.push("D");if(y-x<=5)t.bd++}})});
+  const rows=Object.values(T).map(t=>({...t,diff:t.pp-t.pc,pts:t.v*4+t.n*2+t.bo+t.bd}))
+    .sort((a,b)=>b.pts-a.pts||b.diff-a.diff||b.pp-a.pp||a.c.localeCompare(b.c,"fr"));
+  const lastJ=P.length?P[P.length-1][0]:0;
+  $("bilanSub").textContent=lastJ?`Après ${lastJ} journée${lastJ>1?"s":""}, à partir des scores ci-dessus.`:"Aucun match joué pour l'instant.";
+  const z=i=>i<2?"z1":i<6?"z2":i===12?"z3":i===13?"z4":"";
+  $("std").innerHTML=`<thead><tr><th>#</th><th class="l">Club</th><th>J</th><th>V</th><th>N</th><th>D</th><th>Pour</th><th>Contre</th><th>Diff.</th><th>BO</th><th>BD</th><th>Pts</th><th class="l">5 derniers</th></tr></thead><tbody>`+
+    rows.map((t,i)=>`<tr class="${z(i)}${t.c===club?" selrow":""}"><td class="rk">${i+1}</td><td class="l club">${kit(t.c)}${esc(t.c)}</td><td>${t.j}</td><td>${t.v}</td><td>${t.n}</td><td>${t.d}</td><td>${t.pp}</td><td>${t.pc}</td><td class="${t.diff>0?"pos":t.diff<0?"neg":""}">${t.diff>0?"+":""}${t.diff}</td><td>${t.bo}</td><td>${t.bd}</td><td class="pts">${t.pts}</td><td class="l"><span class="form">${t.f.slice(-5).map(x=>`<i class="${x}" title="${x==="V"?"Victoire":x==="N"?"Nul":"Défaite"}">${x}</i>`).join("")}</span></td></tr>`).join("")+`</tbody>`;
+}
+
+try{const s=JSON.parse(localStorage.getItem("t14f")||"null");if(s){$("club").value=s.club||"";$("lieu").value=s.lieu||"";$("chaine").value=s.ch||"";$("past").checked=!!s.past}}catch(e){}
+["club","lieu","chaine","past"].forEach(id=>$(id).addEventListener("change",render));
+$("go").addEventListener("click",()=>{const el=$("j"+nextJ);if(el)el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"})});
+render();
+</script>
+
+</body>
+</html>
